@@ -1,0 +1,219 @@
+[
+    {
+        "id": "44758e0f.8db4c8",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "8dddcf57.b77d8",
+        "type": "exec",
+        "z": "44758e0f.8db4c8",
+        "command": "python3 ./pzem_2_csv.py",
+        "addpay": "",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "oldrc": false,
+        "name": "",
+        "x": 370,
+        "y": 100,
+        "wires": [
+            [
+                "87a1ecfb.2c40b",
+                "e59e8210.c94fa8"
+            ],
+            [],
+            [
+                "47d1522b.6e27a4"
+            ]
+        ]
+    },
+    {
+        "id": "3faa7b79.0f83a4",
+        "type": "inject",
+        "z": "44758e0f.8db4c8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "15",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 160,
+        "y": 100,
+        "wires": [
+            [
+                "8dddcf57.b77d8"
+            ]
+        ]
+    },
+    {
+        "id": "87a1ecfb.2c40b",
+        "type": "debug",
+        "z": "44758e0f.8db4c8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 350,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "47d1522b.6e27a4",
+        "type": "debug",
+        "z": "44758e0f.8db4c8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 350,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "e59e8210.c94fa8",
+        "type": "csv",
+        "z": "44758e0f.8db4c8",
+        "name": "",
+        "sep": ",",
+        "hdrin": "",
+        "hdrout": "none",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": "",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 650,
+        "y": 140,
+        "wires": [
+            [
+                "611840c7.885df"
+            ]
+        ]
+    },
+    {
+        "id": "efe6fec2.1a294",
+        "type": "debug",
+        "z": "44758e0f.8db4c8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 850,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "611840c7.885df",
+        "type": "function",
+        "z": "44758e0f.8db4c8",
+        "name": "",
+        "func": "let timestamp_ms = Date.now();\nvalue = msg.payload;\n\nmsg.payload =     { \n                    'Voltage '      : { 'value' : value.col2 , 'type': value.col3 },\n                    'Amperage'      : { 'value' : value.col5 , 'type': value.col6 },\n                    'Power'         : { 'value' : value.col8 , 'type': value.col9 },\n                    'Energy'        : { 'value' : value.col11 , 'type': value.col12, 'kWH' : (value.col11 / 1000) },\n                    'Frequency'     : { 'value' : value.col14 , 'type': value.col15 },\n                    'Power Factor'  : { 'value' : value.col17},\n                    'Alarm'         : { 'value' : value.col19},\n                    'Timestamp'     : { 'value' : timestamp_ms},\n    };\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 180,
+        "wires": [
+            [
+                "efe6fec2.1a294",
+                "bf0209f5.1007d",
+                "13f2305b.ecb48"
+            ]
+        ]
+    },
+    {
+        "id": "bf0209f5.1007d",
+        "type": "debug",
+        "z": "44758e0f.8db4c8",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload.Power.value",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 910,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "2ec42445.9d9ecc",
+        "type": "http in",
+        "z": "44758e0f.8db4c8",
+        "name": "",
+        "url": "json",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 200,
+        "wires": [
+            [
+                "8dddcf57.b77d8"
+            ]
+        ]
+    },
+    {
+        "id": "5c01add0.786c4c",
+        "type": "http response",
+        "z": "44758e0f.8db4c8",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 990,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "13f2305b.ecb48",
+        "type": "function",
+        "z": "44758e0f.8db4c8",
+        "name": "",
+        "func": "if (msg.req !== undefined){return msg;}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 860,
+        "y": 140,
+        "wires": [
+            [
+                "5c01add0.786c4c"
+            ]
+        ]
+    }
+]
